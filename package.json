@@ -8,6 +8,10 @@
     "build": "node scripts/build.mjs",
     "deploy": "wrangler deploy"
   },
-  "dependencies": { "qrcode-generator": "1.4.4" },
-  "devDependencies": { "wrangler": "4.86.0" }
+  "dependencies": {
+    "qrcode-generator": "1.4.4"
+  },
+  "devDependencies": {
+    "wrangler": "4.162.0"
+  }
 }

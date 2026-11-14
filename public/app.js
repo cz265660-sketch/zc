@@ -1,10 +1,10 @@
 let catalog;
 let language = localStorage.getItem('zc-language') || 'en';
-let selected = 'All';
+let selected = null;
 const $ = id => document.getElementById(id);
 const t = (en, zh) => language === 'zh' ? zh : en;
 const field = (item, key) => language === 'zh' ? item[key + 'Zh'] || item[key] : item[key];
-const categoryName = name => ({ 'All': t('All guides', '全部指南'), 'Getting started': t('Getting started', '初次使用'), 'Setup': t('Setup', '基础设置'), 'Troubleshooting': t('Troubleshooting', '常见问题') })[name] || name;
+const categoryName = name => name === null ? t('All guides', '全部指南') : ({ 'Getting started': t('Getting started', '初次使用'), 'Setup': t('Setup', '基础设置'), 'Troubleshooting': t('Troubleshooting', '常见问题') })[name] || name;
 function element(tag, className, value) { const node = document.createElement(tag); if (className) node.className = className; if (value) node.textContent = value; return node; }
 function applyLanguage() {
   document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
@@ -32,15 +32,15 @@ function render() {
   $('feature-play').disabled = !featured;
   $('feature-play').replaceChildren(element('span', 'play-small', '▶'), element('span', '', featured ? t('Watch the first guide', '观看第一个指南') : t('Videos coming soon', '视频即将上线')));
   $('feature-play').onclick = () => featured && openVideo(featured);
-  const categories = ['All', ...new Set(catalog.videos.map(v => v.category))];
-  if (!categories.includes(selected)) selected = 'All';
+  const categories = [null, ...new Set(catalog.videos.map(v => v.category))];
+  if (!categories.includes(selected)) selected = null;
   $('categories').replaceChildren(...categories.map(name => {
     const button = element('button', 'tab' + (name === selected ? ' active' : ''), categoryName(name));
     button.type = 'button'; button.setAttribute('aria-pressed', String(name === selected));
     button.onclick = () => { selected = name; render(); }; return button;
   }));
   const query = $('search').value.trim().toLowerCase();
-  const filtered = catalog.videos.filter(v => (selected === 'All' || v.category === selected) && [v.title, v.titleZh, v.description, v.descriptionZh, categoryName(v.category)].join(' ').toLowerCase().includes(query));
+  const filtered = catalog.videos.filter(v => (selected === null || v.category === selected) && [v.title, v.titleZh, v.description, v.descriptionZh, categoryName(v.category)].join(' ').toLowerCase().includes(query));
   $('video-count').textContent = catalog.videos.length + t(' helpful guides', ' 个使用指南');
   $('videos').replaceChildren(...filtered.map((v, i) => {
     const card = element('button', 'video-card'); card.type = 'button'; card.disabled = !v.url;

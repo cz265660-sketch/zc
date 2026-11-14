@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "zc",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-11-14",
+  "workers_dev": true,
+  "preview_urls": true,
+  "durable_objects": {
+    "bindings": [{ "name": "CATALOG", "class_name": "CatalogStore" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["CatalogStore"] }]
+}
